@@ -1,4 +1,4 @@
-# 🏛️ PensionVault — Blockchain-Verified Pension Protocol
+# 🏛️ PensionVault — Blockchain-Verified Pension System
 
 > A next-generation pension management system powered by blockchain verification, AI insights, and smart-contract security.
 
@@ -11,14 +11,14 @@
 
 ## ✨ Features
 
--  Universal Vault ID (UPID)** — A lifelong pension identifier that follows you across all employers
--  Blockchain Contribution Logging** — Every contribution is SHA-256 hashed and recorded on an Ethereum VM via Hardhat
--  AI Retirement Advisor** — Personalized savings advice, anomaly detection, and retirement corpus forecasting
--  Contribution Heatmap** — GitHub-style activity calendar showing 12 months of contribution history
+-  Universal Vault ID (UPID) — A lifelong pension identifier that follows you across all employers
+-  Blockchain Contribution Logging — Every contribution is SHA-256 hashed and recorded on an Ethereum VM via Hardhat
+-  AI Retirement Advisor — Personalized savings advice, anomaly detection, and retirement corpus forecasting
+-  Contribution Heatmap — GitHub-style activity calendar showing 12 months of contribution history
 -  PDF Statement with QR Verification** — Download a cryptographically-verified PDF with an embedded QR code for on-chain proof
--  Employer Trust Leaderboard** — Ranks employers by contribution consistency and total amount
--  Legacy Plan** — Smart-contract based heir management with configurable timeout release
--  Live AI Chat Support** — Real-time Q&A with an AI pension advisor
+-  Employer Trust Leaderboard — Ranks employers by contribution consistency and total amount
+-  Legacy Plan — Smart-contract based heir management with configurable timeout release
+-  Live AI Chat Support — Real-time Q&A with an AI pension advisor
 
 ---
 
