@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #050505;
+  --color-card: #0c0c0e;
+  --color-primary: #00f2ff;
+  --color-secondary: #7000ff;
+  --color-accent: #22c55e;
+  
+  --color-neon-blue: #00f2ff;
+  --color-neon-purple: #bc13fe;
+  --color-neon-pink: #ff0080;
+
+  --shadow-neon-blue: 0 0 10px #00f2ff, 0 0 20px #00f2ff66;
+  --shadow-neon-purple: 0 0 10px #bc13fe, 0 0 20px #bc13fe66;
+
+  --font-sans: "Outfit", "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-white font-sans antialiased selection:bg-primary/30 selection:text-primary;
+  }
+}
+
+@utility glass-effect {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10;
+}
+
+@utility glass-input {
+  @apply w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 focus:outline-none focus:border-primary/50 focus:bg-white/[0.07] transition-all text-white placeholder:text-white/20;
+}
+
+@utility hero-gradient {
+  @apply bg-gradient-to-br from-primary/20 via-transparent to-secondary/20;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@utility animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@utility animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@utility glass-card {
+  @apply bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 transition-all hover:bg-white/10;
+}
+
+@utility neon-button-blue {
+  @apply px-6 py-2 rounded-full bg-primary/20 border border-neon-blue text-neon-blue shadow-neon-blue hover:bg-primary/30 transition-all active:scale-95;
+}
+
+@utility neon-button-purple {
+  @apply px-6 py-2 rounded-full bg-secondary/20 border border-neon-purple text-neon-purple shadow-neon-purple hover:bg-secondary/30 transition-all active:scale-95;
+}
+
+@utility neon-text-blue {
+  @apply text-neon-blue [text-shadow:0_0_10px_#00f2ff];
+}
+
+@utility neon-text-purple {
+  @apply text-neon-purple [text-shadow:0_0_10px_#bc13fe];
+}
+
+/* Custom Scrollbar for Neon Look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 rounded-full border border-neon-blue/50;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/40;
+}
