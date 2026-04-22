@@ -1,27 +1,78 @@
+const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
 
+// --- Mongoose Schema Definition ---
+const contributionSchema = new mongoose.Schema({
+    upid: { type: String, required: true },
+    employerId: { type: String, required: true },
+    amount: { type: Number, required: true },
+    month: { type: String, required: true },
+    year: { type: String, required: true },
+    blockchainHash: { type: String, required: true },
+    status: { type: String, default: 'verified' },
+    createdAt: { type: Date, default: Date.now }
+});
+
+let Contribution;
+try {
+    Contribution = mongoose.model('Contribution');
+} catch {
+    Contribution = mongoose.model('Contribution', contributionSchema);
+}
+
+// --- Hybrid Mock Implementation ---
 const DB_FILE = path.join(__dirname, '../data/contributions.json');
+let memoryContributions = [];
 
-// Ensure data directory exists
-const dataDir = path.dirname(DB_FILE);
-if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir);
+try {
+    if (fs.existsSync(DB_FILE)) {
+        memoryContributions = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+    }
+} catch (err) {
+    console.log('Contribution Model: Using empty memory store');
 }
 
-// Initialize contributions file if it doesn't exist
-if (!fs.existsSync(DB_FILE)) {
-    fs.writeFileSync(DB_FILE, JSON.stringify([]));
+class HybridContribution {
+    constructor(data) {
+        this.data = data;
+        this.instance = (mongoose.connection.readyState === 1) 
+            ? new Contribution(data) 
+            : data;
+    }
+
+    async save() {
+        if (mongoose.connection.readyState === 1) {
+            return await this.instance.save();
+        } else {
+            const newItem = { 
+                ...this.data, 
+                _id: Date.now().toString(),
+                createdAt: new Date() 
+            };
+            memoryContributions.push(newItem);
+            
+            try {
+                if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+                    fs.writeFileSync(DB_FILE, JSON.stringify(memoryContributions, null, 2));
+                }
+            } catch (e) {}
+            return newItem;
+        }
+    }
 }
 
-const ContributionSchema = {
-    find: (query) => {
-        const contributions = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-        if (!query) return { sort: () => contributions };
-        const results = contributions.filter(c => Object.keys(query).every(key => c[key] === query[key]));
+HybridContribution.find = (query = {}) => {
+    if (mongoose.connection.readyState === 1) {
+        // Return a query object that supports .sort()
+        return Contribution.find(query);
+    } else {
+        const results = memoryContributions.filter(c => 
+            Object.keys(query).every(key => String(c[key]) === String(query[key]))
+        );
+        
         return {
             sort: (sortObj) => {
-                // simple sort mockup
                 const key = Object.keys(sortObj)[0];
                 const order = sortObj[key] === -1 ? -1 : 1;
                 return results.sort((a, b) => {
@@ -31,26 +82,7 @@ const ContributionSchema = {
                 });
             }
         };
-    },
-    save: (contribution) => {
-        const contributions = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-        contributions.push(contribution);
-        fs.writeFileSync(DB_FILE, JSON.stringify(contributions, null, 2));
-        return contribution;
     }
 };
 
-class MockContribution {
-    constructor(data) {
-        Object.assign(this, data);
-        this._id = Date.now().toString();
-        this.createdAt = new Date().toISOString();
-    }
-    async save() {
-        return ContributionSchema.save(this);
-    }
-}
-
-MockContribution.find = (query) => ContributionSchema.find(query);
-
-module.exports = MockContribution;
+module.exports = HybridContribution;

@@ -6,20 +6,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Allowed Origins
-const allowedOrigins = [
-  'http://localhost:5173',
-  process.env.FRONTEND_URL
-].filter(Boolean);
-
+// Allow CORS for deployment
 app.use(cors({
-  origin: function(origin, callback) {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){
-      return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
-    }
-    return callback(null, true);
-  },
+  origin: '*', // Allows requests from any deployment URL (Vercel, Netlify, etc.)
   credentials: true
 }));
 
@@ -45,6 +34,10 @@ app.get('/', (req, res) => {
     res.send('Universal Pension Ledger API is running...');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
