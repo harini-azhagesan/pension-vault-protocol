@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, User, Mail, Lock, Building, UserCheck } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +25,7 @@ const Signup = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, formData);
+      const response = await api.post('/api/auth/register', formData);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       navigate('/dashboard');

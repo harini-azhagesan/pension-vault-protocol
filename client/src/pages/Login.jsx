@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, Mail, Lock, ArrowRight, Fingerprint, Globe, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import axios from 'axios';
+import api from '../utils/api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +19,7 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+      const response = await api.post('/api/auth/login', { email, password });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       navigate('/dashboard');

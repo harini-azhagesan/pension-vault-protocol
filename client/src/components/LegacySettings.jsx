@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { HeartPulse, Key, AlertOctagon, CheckCircle2, Loader2, Users, ShieldAlert, Timer } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const LegacySettings = ({ user }) => {
     const [heirAddress, setHeirAddress] = useState('');
@@ -14,7 +14,7 @@ const LegacySettings = ({ user }) => {
 
     const fetchHeirInfo = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/legacy/${user.upid}`);
+            const res = await api.get(`/api/legacy/${user.upid}`);
             if (res.data.heirs && res.data.heirs.length > 0) {
                 setHeirInfo(res.data);
                 setHeirAddress(res.data.heirs.join(', '));
@@ -33,7 +33,7 @@ const LegacySettings = ({ user }) => {
         setLoading(true);
         setMessage({ type: '', text: '' });
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/legacy/set-heir`, {
+            await api.post('/api/legacy/set-heir', {
                 upid: user.upid,
                 heirAddress,
                 timeoutSeconds: timeoutPeriod
@@ -51,7 +51,7 @@ const LegacySettings = ({ user }) => {
         setPingLoading(true);
         setMessage({ type: '', text: '' });
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/legacy/ping`, { upid: user.upid });
+            await api.post('/api/legacy/ping', { upid: user.upid });
             setMessage({ type: 'success', text: 'Heartbeat pinged! Countdown reset & any pending claims cancelled.' });
             fetchHeirInfo();
         } catch (err) {
@@ -64,7 +64,7 @@ const LegacySettings = ({ user }) => {
     const handleInitiateClaim = async () => {
         setClaimLoading(true);
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/legacy/claim-initiate`, { upid: user.upid });
+            await api.post('/api/legacy/claim-initiate', { upid: user.upid });
             setMessage({ type: 'success', text: 'Claim initiated. 3-day safety timelock has started.' });
             fetchHeirInfo();
         } catch (err) {
@@ -77,7 +77,7 @@ const LegacySettings = ({ user }) => {
     const handleExecuteClaim = async () => {
         setClaimLoading(true);
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/legacy/claim-execute`, { upid: user.upid });
+            await api.post('/api/legacy/claim-execute', { upid: user.upid });
             setMessage({ type: 'success', text: 'Inheritance executed. Protocol finalized.' });
             fetchHeirInfo();
         } catch (err) {

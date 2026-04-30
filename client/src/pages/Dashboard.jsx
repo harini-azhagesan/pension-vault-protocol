@@ -23,7 +23,7 @@ import {
   Building2,
   MessageSquare
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import LegacySettings from '../components/LegacySettings';
@@ -88,7 +88,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchAdvice = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/ai/savings-advice/${user.upid}`);
+                const response = await api.get(`/api/ai/savings-advice/${user.upid}`);
                 setAiAdvice(response.data.advice);
             } catch (error) {
                 console.error("Error fetching AI advice:", error);
@@ -99,7 +99,7 @@ const Dashboard = () => {
 
         const fetchContributions = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/contributions/${user.upid}`);
+                const response = await api.get(`/api/contributions/${user.upid}`);
                 setContributions(response.data.contributions);
             } catch (error) {
                 console.error("Error fetching contributions:", error);
@@ -832,7 +832,7 @@ const Dashboard = () => {
                                     setChatInput('');
                                     setChatLoading(true);
                                     try {
-                                        const res = await axios.post('http://localhost:5000/api/ai/chat', { message: userMsg, upid: user.upid });
+                                        const res = await api.post('/api/ai/chat', { message: userMsg, upid: user.upid });
                                         setChatMessages(prev => [...prev, { role: 'ai', text: res.data.reply }]);
                                     } catch {
                                         setChatMessages(prev => [...prev, { role: 'ai', text: 'Sorry, I am having trouble connecting right now. Please try again.' }]);

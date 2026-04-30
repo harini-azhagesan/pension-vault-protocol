@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, ShieldCheck, Building2, TrendingUp, Loader2 } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const EmployerLeaderboard = () => {
     const [scores, setScores] = useState([]);
@@ -10,7 +10,7 @@ const EmployerLeaderboard = () => {
     useEffect(() => {
         const fetchScores = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/contributions/leaderboard/scores`);
+                const res = await api.get('/api/contributions/leaderboard/scores');
                 setScores(res.data);
             } catch (err) {
                 console.error("Error fetching leaderboard:", err);
